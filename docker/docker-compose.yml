@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  friendtech:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+    networks:
+      - friendtech-nw
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpassword
+      - POSTGRES_DB=testdb
+    networks:
+      - friendtech-nw
+
+volumes:
+  pgdata:
+
+networks:
+    friendtech-nw:
+        external: true
+        
+  
